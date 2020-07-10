@@ -1,5 +1,7 @@
 package newtime.gfx.resources;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +10,9 @@ import javax.imageio.ImageIO;
 
 public class GraphicsManager {
 
+	public static GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	public static GraphicsConfiguration graphicsConfiguration = graphicsEnvironment.getDefaultScreenDevice().getDefaultConfiguration();
+	
 	private ITexture[] textures = new ITexture[1024];
 	
 	public GraphicsManager() {}

@@ -8,7 +8,7 @@ import newtime.gfx.Screen;
 public class Game implements Runnable {
 	
 	protected int state = 0;
-	protected GameState[] states = new GameState[64];
+	protected IGameState[] states = new IGameState[64];
 	
 	protected Screen screen;
 	
@@ -18,12 +18,12 @@ public class Game implements Runnable {
 	
 	protected int tickRate = 60;
 	
-	public Game(GameState initialGameState, int screenWidth, int screenHeight, boolean forceOpenGL, boolean forceNative) {
+	public Game(IGameState initialGameState, int screenWidth, int screenHeight, boolean forceD3D, boolean forceOpenGL, boolean forceNative) {
 		this.states[0] = initialGameState;
 		
 		this.thread = new Thread(this);
 		
-		this.screen = Screen.initializeAcceleratedScreen(screenWidth, screenHeight, forceOpenGL, forceNative);
+		this.screen = Screen.initializeAcceleratedScreen(screenWidth, screenHeight, forceD3D, forceOpenGL, forceNative);
 		this.screen.setClearColor(Color.BLUE);
 		
 		this.thread.start();
@@ -66,7 +66,7 @@ public class Game implements Runnable {
 		return this.state;
 	}
 	
-	public GameState getCurrentGameState() {
+	public IGameState getCurrentGameState() {
 		return this.states[this.state];
 	}
 	

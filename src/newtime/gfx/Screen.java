@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import newtime.gfx.resources.GraphicsManager;
+
 public class Screen extends Canvas {
 	
 	protected final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
@@ -28,30 +30,29 @@ public class Screen extends Canvas {
 	protected Color clearColor = Color.BLACK;
 	
 	protected Renderable[][] renderables = new Renderable[64][5120];
-	
-	protected GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	protected GraphicsConfiguration graphicsConfiguration = graphicsEnvironment.getDefaultScreenDevice().getDefaultConfiguration();
-	
+		
 	protected BufferCapabilities bufferCapabilities;
 	
-	public static Screen initializeAcceleratedScreen(int frameWidth, int frameHeight, boolean forceOpenGL, boolean forceNative) {
+	public static Screen initializeAcceleratedScreen(int frameWidth, int frameHeight, boolean forceD3D, boolean forceOpenGL, boolean forceNative) {
 		String osName = System.getProperty("os.name");		
 		
 		System.out.println("Operating System: " + osName);
+		System.out.println("Force D3D: " + forceD3D);
 		System.out.println("Force openGL: " + forceOpenGL);
 		System.out.println("Force native: " + forceNative);
-		if(!forceOpenGL && osName.toLowerCase().contains("windows")) {
+		
+		if((!forceOpenGL && !forceNative && osName.toLowerCase().contains("windows")) || forceD3D) {
 			System.setProperty("sun.java2d.transaccel", "True");
 			System.setProperty("sun.java2d.d3d", "True");
 			System.setProperty("sun.java2d.ddforcevram", "True");
-		}else if(!forceNative){		
+		}else if(!forceNative || forceOpenGL){		
 			System.setProperty("sun.java2d.opengl", "True");
 			System.setProperty("Dsun.java2d.opengl", "True");
 		}
-		return new Screen(frameWidth, frameHeight);
+		return new Screen(frameWidth, frameHeight, forceNative);
 	}
 	
-	private Screen(int frameWidth, int frameHeight) {		
+	private Screen(int frameWidth, int frameHeight, boolean forceNative) {
 		this.frame = new Frame();
 		this.frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -63,7 +64,12 @@ public class Screen extends Canvas {
 		this.frame.add(this);
 		this.frame.setVisible(true);
 		
-		this.bufferCapabilities = new BufferCapabilities(new ImageCapabilities(true), new ImageCapabilities(true), BufferCapabilities.FlipContents.BACKGROUND);
+		if(!forceNative) {
+			this.bufferCapabilities = new BufferCapabilities(new ImageCapabilities(true), new ImageCapabilities(true), BufferCapabilities.FlipContents.BACKGROUND);
+		}else {
+			System.out.println("Forcing native bufferCapabilities");
+			this.bufferCapabilities = GraphicsManager.graphicsConfiguration.getBufferCapabilities();
+		}
 	}
 	
 	public void render() {

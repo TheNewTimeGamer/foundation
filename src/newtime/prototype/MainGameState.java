@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import newtime.core.Game;
 import newtime.core.GameObject;
-import newtime.core.GameState;
+import newtime.core.IGameState;
 import newtime.gfx.RenderableContext;
 
-public class MainGameState implements GameState {
+public class MainGameState implements IGameState {
 
 	public void init(Game game) {
 		ArrayList<GameObject> gameObjects = game.getGameObjects();

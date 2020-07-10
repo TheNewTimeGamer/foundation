@@ -1,10 +1,10 @@
 package newtime.gfx.resources;
 
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 public interface ITexture {
 	
 	public String getName();	
-	public BufferedImage getBufferedImage();
+	public Image getImage();
 
 }
