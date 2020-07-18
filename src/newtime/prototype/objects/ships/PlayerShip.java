@@ -10,14 +10,14 @@ public class PlayerShip extends Ship {
 	
 	public PlayerShip(Game game, String name) {
 		super(game, name, Faction.PLAYER, Ship.TYPE_PLAYER);
-		this.setActive(true);
 		this.setVisible(this.game.getScreen(), true);
+		this.setActive(true);
 	}
 	
 	public PlayerShip(Game game, String name, ShipPart[] parts) {
 		super(game, name, Faction.PLAYER, Ship.TYPE_PLAYER, parts);
-		this.setActive(true);
 		this.setVisible(this.game.getScreen(), true);
+		this.setActive(true);
 	}
 	
 	public void tick() {

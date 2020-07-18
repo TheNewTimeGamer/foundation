@@ -19,7 +19,6 @@ public class ShipPartBlock extends ShipPart {
 	public void performAction(Ship target) {}
 
 	public void render(RenderableContext context) {
-		super.render(context);
 		context.graphics.setColor(Color.WHITE);
 		context.graphics.fillPolygon(this);
 		context.graphics.setColor(Color.BLACK);

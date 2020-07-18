@@ -80,15 +80,6 @@ public class Ship extends GameObject {
 			}
 		}
 	}
-
-	public void setVisible(Screen screen, boolean visible) {
-		super.setVisible(screen, visible);
-		for(ShipPart part : parts) {
-			if(part != null) {
-				part.setVisible(screen, visible);
-			}
-		}
-	}
 	
 	public void translate(int deltaX, int deltaY) {
 		super.translate(deltaX, deltaY);
