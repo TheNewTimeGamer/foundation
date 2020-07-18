@@ -26,7 +26,7 @@ public class Prototype extends Game {
 				continue;
 			}
 		}
-		new Prototype(1280,720,forceD3D,forceOpenGL,forceNative);
+		new Prototype(1280,720, forceD3D, forceOpenGL, forceNative);
 	}
 	
 	public Prototype(int screenWidth, int screenHeight, boolean forceD3D, boolean forceOpenGL, boolean forceNative) {

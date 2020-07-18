@@ -6,13 +6,15 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
+import java.awt.Graphics2D;
 import java.awt.ImageCapabilities;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.VolatileImage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,6 +34,9 @@ public class Screen extends Canvas {
 	protected Renderable[][] renderables = new Renderable[64][5120];
 		
 	protected BufferCapabilities bufferCapabilities;
+	
+	public boolean[] mouse = new boolean[64];
+	public boolean[] keyboard = new boolean[1024];
 	
 	public static Screen initializeAcceleratedScreen(int frameWidth, int frameHeight, boolean forceD3D, boolean forceOpenGL, boolean forceNative) {
 		String osName = System.getProperty("os.name");		
@@ -70,6 +75,25 @@ public class Screen extends Canvas {
 			System.out.println("Forcing native bufferCapabilities");
 			this.bufferCapabilities = GraphicsManager.graphicsConfiguration.getBufferCapabilities();
 		}
+		
+		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				mouse[e.getButton()] = true;
+			}
+			public void mouseReleased(MouseEvent e) {
+				mouse[e.getButton()] = false;
+			}
+		});
+		
+		this.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				keyboard[e.getKeyCode()] = true;
+			}
+			public void keyReleased(KeyEvent e) {
+				keyboard[e.getKeyCode()] = false;
+			}
+		});
+				
 	}
 	
 	public void render() {
@@ -89,7 +113,7 @@ public class Screen extends Canvas {
 			if(this.renderables[z] == null) {continue;}
 			Future[] futures = new Future[this.AVAILABLE_PROCESSORS];
 			for(int x = 0; x < this.AVAILABLE_PROCESSORS; x++) {
-				futures[x] = threadPool.submit(new RenderWorker(this, z, this.renderables[z], this.AVAILABLE_PROCESSORS, x, bs.getDrawGraphics()));
+				futures[x] = threadPool.submit(new RenderWorker(this, z, this.renderables[z], this.AVAILABLE_PROCESSORS, x, (Graphics2D) bs.getDrawGraphics()));
 			}
 			
 			boolean completed;
@@ -171,9 +195,9 @@ class RenderWorker implements Runnable {
 	
 	private final int zIndex;
 	
-	private final Graphics graphicsContext;
+	private final Graphics2D graphicsContext;
 		
-	public RenderWorker(Screen screen, int zIndex, Renderable[] renderables, int threadCount, int index, Graphics graphicsContext) {
+	public RenderWorker(Screen screen, int zIndex, Renderable[] renderables, int threadCount, int index, Graphics2D graphicsContext) {
 		this.screen = screen;
 		this.renderables = renderables;
 		

@@ -23,28 +23,34 @@ public class GraphicsManager {
 			return;
 		}
 		if(file.isDirectory()) {
-			loadDirectory(file);
+			loadDirectory(file, true);
 		}else if(file.isFile()) {
-			loadFile(file);
+			loadFile(file, true);
 		}
 	}
 	
-	public int loadDirectory(File file) {
+	public int loadDirectory(File file, boolean nativeTexture) {
 		File[] files = file.listFiles();
 		int successful = 0;
 		for(File f : files) {
-			if(loadFile(f)) {
+			if(loadFile(f, nativeTexture)) {
 				successful++;
 			}
 		}
 		return successful;
 	}
 	
-	public boolean loadFile(File file) {
+	public boolean loadFile(File file, boolean nativeTexture) {
 		try {
 			String name = file.getName().split("\\.")[0];
 			BufferedImage image = ImageIO.read(file);
-			if(addTexture(new Texture(name, image)) >= 0) {
+			ITexture texture = null;
+			if(nativeTexture) {
+				texture = new NativeTexture(name, image);
+			}else {
+				texture = new Texture(name, image);
+			}
+			if(addTexture(texture) >= 0) {
 				return true;
 			}
 		}catch(IOException e) {

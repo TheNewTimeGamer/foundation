@@ -5,16 +5,21 @@ import newtime.gfx.RenderableContext;
 import newtime.gfx.Screen;
 
 public abstract class GameObject extends Renderable {
-
-	protected float x, y;
-	protected float width, height;
 	
 	private boolean active = false;
 	private boolean visible = false;
 	
 	private int zIndex = 0;
 	
-	public void tick(Game game) {
+	protected double rotation = 0;
+	
+	protected Game game;
+		
+	public GameObject(Game game) {
+		this.game = game;
+	}
+	
+	public void tick() {
 		if(!this.active) {return;}
 	}
 	
